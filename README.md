@@ -4,7 +4,7 @@
 > Fairwind Travel Advisors is a fictional agency. Every guest is fake (Faker, `example.com` emails). The app is
 > not connected to a live HubSpot portal or any client account, and it refuses to start in "live" mode.
 >
-> **Live demo:** _add the Render URL here after deploying_
+> **Live demo:** https://fairwind-checkin-demo.onrender.com (free instance: the first load can take ~30 seconds while it wakes up)
 
 Built on patterns from the production lead system I run for my own business: consent capture, CRM property
 mapping, and idempotent upserts by email. The code here is a fresh, standalone build with sample data.
@@ -27,7 +27,7 @@ worth advertising to.
 | **4. HubSpot property mapping.** | ![Mapping table](docs/screenshots/4-hubspot-mapping.png) |
 | **5. Mocked sync log.** The exact CRM upsert JSON that would go to HubSpot. | ![Sync log](docs/screenshots/5-sync-log.png) |
 | **6. Tests.** All 41 pass with `pytest`. | ![Tests passing](docs/screenshots/6-tests-passing.png) |
-| **7. Live on Render.** | _Screenshot of the deployed page, with its web address visible, goes here: `docs/screenshots/7-live-render.png`._ |
+| **7. Live on Render** at [fairwind-checkin-demo.onrender.com](https://fairwind-checkin-demo.onrender.com). | ![Live on Render](docs/screenshots/7-live-render.png) |
 
 ## What it does
 
