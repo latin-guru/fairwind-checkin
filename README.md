@@ -17,11 +17,17 @@ Profile** and **suggested HubSpot active lists** that a project manager would sy
 generic crowd. A simple, consent-first check-in fixes that: it shows who actually comes in and which audiences are
 worth advertising to.
 
-| Check-in (phone) | Ideal Traveler Profile | Mocked HubSpot sync log |
-|---|---|---|
-| ![Check-in form](docs/screenshots/checkin-mobile.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![Sync log](docs/screenshots/sync-log.png) |
+## Screenshots
 
-<!-- Screenshot placeholders: replace with fresh captures from your deployed demo if you restyle it. -->
+| | |
+|---|---|
+| **1. Check-in on a phone.** The consent box starts unchecked, and there are no ID photos. | ![Check-in form on a phone](docs/screenshots/1-checkin-mobile.png) |
+| **2. Ideal Traveler Profile.** Summary and charts, from consented guests only. | ![Ideal Traveler dashboard](docs/screenshots/2-ideal-traveler.png) |
+| **3. Suggested HubSpot active lists.** It includes the exclusion list. | ![Suggested lists](docs/screenshots/3-suggested-lists.png) |
+| **4. HubSpot property mapping.** | ![Mapping table](docs/screenshots/4-hubspot-mapping.png) |
+| **5. Mocked sync log.** The exact CRM upsert JSON that would go to HubSpot. | ![Sync log](docs/screenshots/5-sync-log.png) |
+| **6. Tests.** All 41 pass with `pytest`. | ![Tests passing](docs/screenshots/6-tests-passing.png) |
+| **7. Live on Render.** | _Screenshot of the deployed page, with its web address visible, goes here: `docs/screenshots/7-live-render.png`._ |
 
 ## What it does
 
