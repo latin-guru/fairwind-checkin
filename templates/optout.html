@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Opt out · Fairwind Travel Advisors{% endblock %}
+{% block main_class %}page narrow{% endblock %}
+{% block content %}
+<section class="card">
+  {% if done %}
+    <h1>You're opted out.</h1>
+    <p class="lede">You won't get marketing emails or be included in ad audiences from Fairwind Travel Advisors.
+      Your check-in history stays on file so we can still help you when you visit.</p>
+  {% else %}
+    <h1>Opt out of marketing</h1>
+    <p class="lede">Stop travel updates and offers, and remove yourself from our ad audiences.</p>
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="/opt-out">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      {% if guest %}
+        <input type="hidden" name="token" value="{{ token }}">
+        <p>Opting out <strong>{{ guest.first_name }}</strong>.</p>
+      {% else %}
+        <label for="email">Your email</label>
+        <input id="email" name="email" type="email" required autocomplete="email" maxlength="254">
+      {% endif %}
+      <button type="submit" class="btn">Opt me out</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

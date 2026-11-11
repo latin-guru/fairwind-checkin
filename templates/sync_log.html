@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Mocked HubSpot sync log · Fairwind{% endblock %}
+{% block content %}
+<h1>Mocked HubSpot sync log</h1>
+<p class="lede">The exact requests a real integration would send. <strong>Nothing here was sent</strong>: the client
+  is a mock with no token and no network access. Newest first, last 30.</p>
+{% if not rows %}
+  <p class="card">No calls yet. <a href="/">Check in a guest</a> to see the payloads.</p>
+{% endif %}
+{% for r in rows %}
+<details class="card log" {% if loop.first %}open{% endif %}>
+  <summary><span class="pill">{{ r.action }}</span> <code>{{ r.method }} {{ r.url }}</code>
+    <span class="when">{{ r.created_at.strftime("%b %d, %H:%M UTC") }}</span></summary>
+  <pre>{{ r.body }}</pre>
+</details>
+{% endfor %}
+{% endblock %}

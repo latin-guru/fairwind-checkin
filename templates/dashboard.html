@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Ideal Traveler Profile · Fairwind Travel Advisors{% endblock %}
+{% block content %}
+<div class="title-row">
+  <h1>Ideal Traveler Profile</h1>
+  <p class="sync-status">
+    {% if last_sync %}Last mocked HubSpot sync: {{ last_sync.strftime("%b %d, %H:%M UTC") }}{% else %}No HubSpot calls yet{% endif %}
+    · <a href="/sync-log">View sync log</a>
+  </p>
+</div>
+<p class="lede">Built from consented guests only ({{ profile.size }}). {{ profile.headline }}</p>
+
+<section class="stats" aria-label="Totals">
+  <div class="stat"><span class="n">{{ totals.checkins }}</span><span>check-ins</span></div>
+  <div class="stat"><span class="n">{{ totals.guests }}</span><span>guests</span></div>
+  <div class="stat good"><span class="n">{{ totals.consented }}</span><span>ad-eligible</span></div>
+  <div class="stat"><span class="n">{{ totals.declined }}</span><span>didn't opt in</span></div>
+  <div class="stat"><span class="n">{{ totals.opted_out }}</span><span>opted out</span></div>
+</section>
+<p class="fine">{% if totals.checkins > totals.guests %}Check-ins are higher than guests because
+  {{ totals.repeat_guests }} guest{{ "s" if totals.repeat_guests != 1 }} checked in more than once. Each person is one
+  contact, updated on every visit.{% endif %}</p>
+
+<script type="application/json" id="profile-data">{{ profile | tojson }}</script>
+<section class="charts">
+  {% for key, title in [("zips", "Top zip codes"), ("ages", "Age ranges"), ("trips", "Trip types"),
+                        ("budgets", "Budget per trip"), ("sources", "How they heard about us")] %}
+  <figure class="card chart">
+    <figcaption>{{ title }}</figcaption>
+    <div class="chart-box"><canvas data-chart="{{ key }}" role="img" aria-label="{{ title }} chart"></canvas></div>
+    {# Plain bars too, so the numbers read even if the chart script doesn't load #}
+    <ul class="bars">
+      {% set mx = (profile[key].counts | max) if profile[key].counts else 0 %}
+      {% for lbl in profile[key].labels %}
+        {% set n = profile[key].counts[loop.index0] %}
+        <li><span class="bl">{{ lbl }}</span><progress max="{{ mx or 1 }}" value="{{ n }}"></progress><span class="bn">{{ n }}</span></li>
+      {% endfor %}
+    </ul>
+  </figure>
+  {% endfor %}
+</section>
+
+<h2 id="lists">Suggested HubSpot Active Lists</h2>
+<p class="lede">In a live portal these are <strong>active segments</strong> that update themselves. A PM would open
+  Marketing → Ads and create a <em>contact segment audience</em> from each targeting list, so it syncs to Meta,
+  Google or LinkedIn. Every targeting list starts from the same consent rule, so a guest who didn't opt in, or who
+  opted out, is never in an ad audience.</p>
+<div class="note">
+  <strong>Honest limit:</strong> ad platforms need much bigger audiences than 50 sample rows before they'll match
+  (roughly {% for name, n in segments_minimums %}{{ name }} {{ "{:,}".format(n) }}{% if not loop.last %}, {% endif %}{% endfor %}).
+  The value here is the property model, the consent rules and the list design.
+</div>
+<div class="note sync-how">
+  <strong>How it reaches Meta and Google:</strong> in HubSpot, connect the ad accounts (Marketing → Ads → Connect
+  account), then create an audience from a contact list. HubSpot keeps that audience in sync with the active list
+  automatically, adding new matches and removing anyone who leaves it (like a guest who opts out). Add the
+  Exclusion list as an excluded audience on every campaign.
+</div>
+
+<section class="lists">
+  {% for lst in lists %}
+  <article class="card list {{ lst.purpose }}">
+    <header><h3>{{ lst.name }}</h3><span class="count">{{ lst.members | length }}</span></header>
+    <p>{{ lst.why }}</p>
+    <pre class="rules">{% for line in lst.filter_lines %}{{ line }}
+{% endfor %}</pre>
+  </article>
+  {% endfor %}
+</section>
+
+<h2 id="recent">Recent check-ins</h2>
+<div class="table-wrap">
+<table class="recent">
+  <thead><tr><th>Guest</th><th>Trip</th><th>Budget</th><th>Consent</th><th></th></tr></thead>
+  <tbody>
+  {% for g in recent %}
+    <tr>
+      <td>{{ g.first_name }} {{ g.last_name[:1] }}.</td>
+      <td>{{ choices.label(choices.TRIP_TYPES, g.trip_type) }}</td>
+      <td>{{ choices.label(choices.BUDGET_BANDS, g.budget_band) }}</td>
+      <td>
+        {% if g.ad_eligible %}<span class="pill good">Opted in</span>
+        {% elif g.opted_out_at or g.email_optout %}<span class="pill">Opted out</span>
+        {% else %}<span class="pill muted">No consent</span>{% endif %}
+      </td>
+      <td>
+        {% if g.ad_eligible %}
+        <form method="post" action="/dashboard/opt-out/{{ g.id }}">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="link" type="submit">Opt out</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/vendor/chart-4.4.7.umd.js" defer></script>
+<script src="/static/dashboard.js" defer></script>
+{% endblock %}

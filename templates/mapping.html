@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}HubSpot property mapping · Fairwind{% endblock %}
+{% block content %}
+<h1>HubSpot property mapping</h1>
+<p class="lede">How each check-in field lands on a HubSpot contact. Custom properties would be created once in the
+  portal (Settings → Properties, or <code>POST /crm/v3/properties/contacts</code>).</p>
+<div class="table-wrap">
+<table class="kv">
+  <thead><tr><th>Internal name</th><th>Label</th><th>Kind</th><th>Type</th></tr></thead>
+  <tbody>
+  {% for name, label, kind, typ in table %}
+    <tr><td><code>{{ name }}</code></td><td>{{ label }}</td>
+        <td><span class="pill {{ 'good' if kind == 'standard' else '' }}">{{ kind }}</span></td><td>{{ typ }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<div class="note">
+  <strong>Consent is more than a property.</strong> In production a ticked box also subscribes the contact to the
+  marketing email subscription type (Communication Preferences API, <code>statusState=SUBSCRIBED</code>,
+  <code>legalBasis=CONSENT_WITH_NOTICE</code>), and an opt-out sends <code>UNSUBSCRIBED</code>.
+  <code>hs_email_optout</code> and <code>hs_marketable_status</code> are set by HubSpot itself; this app only reads
+  them. The preferred intake is the Forms API with <code>legalConsentOptions</code>; the CRM batch upsert by email is
+  the fallback. Both request shapes are in the <a href="/sync-log">sync log</a>.
+</div>
+{% endblock %}

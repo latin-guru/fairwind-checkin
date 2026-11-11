@@ -1,0 +1,18 @@
+# Render Blueprint: one free web service. Sample data only; the HubSpot client is a mock.
+services:
+  - type: web
+    name: fairwind-checkin-demo
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DEMO_MODE        # reseed the 50 fake guests on every boot
+        value: "1"
+      - key: CRM_MOCK         # must stay true; the app refuses to start otherwise
+        value: "true"
+      - key: SECRET_KEY       # signs the CSRF cookie
+        generateValue: true

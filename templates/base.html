@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Fairwind Travel Advisors{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">
+    Sample-data demo · HubSpot API is mocked · not connected to a live portal
+  </div>
+  <header class="site-header">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">✈</span> Fairwind Travel Advisors</a>
+    <nav>
+      <a href="/">Check-in</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/mapping">Mapping</a>
+      <a href="/sync-log">Sync log</a>
+    </nav>
+  </header>
+  <main class="{% block main_class %}page{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    Fictional agency. All guests are fake (Faker, example.com emails). No ID photos or documents are collected.
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

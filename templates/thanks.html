@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Thanks · Fairwind Travel Advisors{% endblock %}
+{% block main_class %}page narrow{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>You're checked in{% if guest %}, {{ guest.first_name }}{% endif %}!</h1>
+  <p class="lede">An advisor will be with you shortly.</p>
+  {% if guest %}
+    {% if guest.marketing_consent %}
+      <p>You chose to get travel updates and offers. Changed your mind?
+        <a href="/opt-out?g={{ guest.optout_token }}">Opt out of marketing</a>.</p>
+    {% else %}
+      <p>You didn't opt in to marketing, so we'll only use your details for this visit.</p>
+    {% endif %}
+  {% endif %}
+</section>
+
+{% if props %}
+<section class="card demo-only">
+  <h2>Demo: what would sync to HubSpot</h2>
+  <p class="fine">Mocked. This exact property set was written to the <a href="/sync-log">sync log</a>; nothing was sent.</p>
+  <table class="kv">
+    <thead><tr><th>HubSpot property</th><th>Value</th></tr></thead>
+    <tbody>
+      {% for k, v in props.items() %}<tr><td><code>{{ k }}</code></td><td>{{ v }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+<p class="center"><a class="btn secondary" href="/">Check in another guest</a></p>
+{% endblock %}

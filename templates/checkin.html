@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Guest check-in · Fairwind Travel Advisors{% endblock %}
+{% block main_class %}page narrow{% endblock %}
+{% macro select(name, label_text, options) -%}
+  <label for="{{ name }}">{{ label_text }}</label>
+  <select id="{{ name }}" name="{{ name }}" required {% if errors.get(name) %}aria-invalid="true" aria-describedby="{{ name }}-err"{% endif %}>
+    <option value="">Choose one</option>
+    {% for value, text in options %}
+      <option value="{{ value }}" {% if values.get(name) == value %}selected{% endif %}>{{ text }}</option>
+    {% endfor %}
+  </select>
+  {% if errors.get(name) %}<p class="field-error" id="{{ name }}-err">{{ errors[name] }}</p>{% endif %}
+{%- endmacro %}
+{% macro text(name, label_text, type="text", extra="") -%}
+  <label for="{{ name }}">{{ label_text }}</label>
+  <input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ values.get(name, '') }}" required {{ extra|safe }}
+         {% if errors.get(name) %}aria-invalid="true" aria-describedby="{{ name }}-err"{% endif %}>
+  {% if errors.get(name) %}<p class="field-error" id="{{ name }}-err">{{ errors[name] }}</p>{% endif %}
+{%- endmacro %}
+{% block content %}
+<section class="card">
+  <h1>Welcome! Let's get you checked in.</h1>
+  <p class="lede">Takes about a minute. We only ask what helps us plan your trip. No ID photos or scans, ever.</p>
+
+  {% if errors.get("form") %}<p class="form-error" role="alert">{{ errors["form"] }}</p>
+  {% elif errors %}<p class="form-error" role="alert">Please fix the highlighted fields.</p>{% endif %}
+
+  <form method="post" action="/check-in" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+
+    <div class="row">
+      <div>{{ text("first_name", "First name", extra='autocomplete="given-name" maxlength="60"') }}</div>
+      <div>{{ text("last_name", "Last name", extra='autocomplete="family-name" maxlength="60"') }}</div>
+    </div>
+    {{ text("email", "Email", type="email", extra='autocomplete="email" inputmode="email" maxlength="254"') }}
+    {{ text("zip", "Zip code", extra='autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"') }}
+
+    <div class="row">
+      <div>{{ select("age_range", "Age range", choices.AGE_RANGES) }}</div>
+      <div>{{ select("party_size", "Party size", choices.PARTY_SIZES) }}</div>
+    </div>
+    {{ select("trip_type", "What kind of trip?", choices.TRIP_TYPES) }}
+    {{ select("budget_band", "Budget per trip", choices.BUDGET_BANDS) }}
+    {{ select("source", "How did you hear about us?", choices.SOURCES) }}
+
+    <div class="consent">
+      <input id="marketing_consent" name="marketing_consent" type="checkbox" value="yes">
+      <label for="marketing_consent">{{ consent_text }}</label>
+    </div>
+    <p class="fine">Optional. You can check in without ticking this box. We never sell your details.</p>
+
+    <button type="submit" class="btn">Check in</button>
+  </form>
+</section>
+{% endblock %}
